@@ -45,21 +45,27 @@ describe Person do
         create(:location, name: "location2")
       ]
       managers = locations.map do |location|
-        create(:person, name: "manager-at-#{location.name}", location: location)
+        create(:person, location: location)
       end
       managers.each do |manager|
         2.times do
-          create(:person, name: "employee-of-#{manager.name}", manager: manager)
+          create(:person, manager: manager)
         end
       end
 
       result = Person.with_employees_order_by_location_name
 
-      expect(result.map(&:name)).to eq(%w(
-        manager-at-location1
-        manager-at-location2
-        manager-at-location3
-      ))
+      result.each_with_index do |person, index|
+        expect(person).to be_manager # it finds managers
+        expect(person.location.name). # it orders by location name
+          to eq Location.order(:name).map(&:name).at(index)
+      end
+
+      # expect(result.map(&:name)).to eq(%w(
+      #   manager-at-location1
+      #   manager-at-location2
+      #   manager-at-location3
+      # ))
     end
   end
 end

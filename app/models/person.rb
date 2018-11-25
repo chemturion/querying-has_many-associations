@@ -5,14 +5,21 @@ class Person < ActiveRecord::Base
   has_many :employees, class_name: "Person", foreign_key: :manager_id
 
   def self.order_by_location_name
-    order(:name)
+    joins(:location).merge(Location.order(:name))
   end
 
   def self.with_employees
-    where(manager_id: nil)
+    joins(:employees).distinct
   end
 
   def self.with_employees_order_by_location_name
-    with_employees.order_by_location_name
+    # from(Person.with_employees, :people).joins(:location).merge(Location.order(:name))
+    # joins(employees: :location).distinct.order(:name)
+    # joins(:employees).distinct.order(:name)
+    from(Person.with_employees, :people).order_by_location_name
+  end
+
+  def manager?
+    employees.any?
   end
 end

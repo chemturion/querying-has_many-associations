@@ -1,6 +1,7 @@
 require "active_record"
 require "database_cleaner"
 require "factory_girl"
+require "awesome_print"
 
 Dir.glob(File.expand_path("../../app/models/*.rb", __FILE__)) do |model|
   require model

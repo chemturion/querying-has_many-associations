@@ -10,3 +10,4 @@ gem "pg"
 gem "pry"
 gem "rake"
 gem "rspec"
+gem "awesome_print", require: true
